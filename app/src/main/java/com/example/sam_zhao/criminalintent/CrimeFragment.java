@@ -28,7 +28,8 @@ public class CrimeFragment extends Fragment {
 
     private Crime mCrime;
     private EditText mTitleField;
-    private Button mButton;
+    private Button mDateButton;
+    private Button mDelButton;
     private CheckBox mCheckBox;
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -71,15 +72,25 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        mButton = (Button) v.findViewById(R.id.crime_date);
+        mDateButton = (Button) v.findViewById(R.id.crime_date);
         updateDate();
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
                 DatePickerFragment dateDialog = DatePickerFragment.newInstance(mCrime.getDate());
                 dateDialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                 dateDialog.show(fm, DIALOG_DATE);
+            }
+        });
+
+        mDelButton = (Button) v.findViewById(R.id.delete_crime);
+        mDelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CrimeLab crimeLab = CrimeLab.get(getActivity());
+                crimeLab.deleteCrime(mCrime.getId());
+                getActivity().finish();
             }
         });
 
@@ -109,7 +120,7 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate() {
-        mButton.setText(mCrime.getDate().toString());
+        mDateButton.setText(mCrime.getDate().toString());
     }
 
     public void returnResult() {
